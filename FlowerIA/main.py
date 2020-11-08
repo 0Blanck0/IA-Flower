@@ -1,22 +1,31 @@
 import numpy as np
 import NeuronalClass as Neuronal
 
-x_entre = np.array(([3, 1.5], [2, 1], [4, 1.5], [3, 1], [3.5, 0.5], [2, 0.5], [5.5, 1], [1, 1], [4, 1.5]), dtype=float)
-y = np.array(([1], [0], [1], [0], [1], [0], [1], [0]), dtype=float)
+# Input value sent to AI
+X_input = np.array(([3, 1.5], [2, 1], [4, 1.5], [3, 1], [3.5, 0.5], [2, 0.5], [5.5, 1], [1, 1], [4, 1.5]), dtype=float)
+# Expected Output Value (Last input value is not included)
+Y = np.array(([1], [0], [1], [0], [1], [0], [1], [0]), dtype=float)
 
-x_entre = x_entre / np.amax(x_entre, axis=0)
+X_input = X_input / np.amax(X_input, axis=0)
 
-x = np.split(x_entre, [8])[0]
-xPrediction = np.split(x_entre, [8])[1]
+# Get input value (Last input value is not included)
+X = np.split(X_input, [8])[0]
 
+# Get last input value
+xPrediction = np.split(X_input, [8])[1]
+
+# Create Neuronal AI object
 NN = Neuronal.NeuronalNetwork()
 
+# Training of the AI before sending the sought value
 for i in range(100):
-    print(i)
-    NN.train(x, y)
+    NN.train(X, Y)
 
-print("Valeurs d'entrées: \n" + str(x))
-print("Sortie actuelle: \n" + str(y))
+# Print input value and expected output value
+print("\nInput value: \n" + str(X))
+print("\n")
+print("Expected Output value: \n" + str(Y))
 print("\n")
 
+# Search the last value of the input array and display are results
 NN.predict(xPrediction)

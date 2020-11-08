@@ -13,42 +13,47 @@ class NeuronalNetwork(object):
         self.W1 = np.random.randn(self.inputSize, self.hiddenSize)
         self.W2 = np.random.randn(self.hiddenSize, self.outputSize)
 
-    # Fonction de propagation avant
-    def forward(self, X):
-        self.z = np.dot(X, self.W1)  # Multiplication matricielle entre les valeurs d'entrer et les poids W1
-        self.z2 = self.sigmoid(self.z)  # Application de la fonction d'activation (Sigmoid)
-        self.z3 = np.dot(self.z2, self.W2)  # Multiplication matricielle entre les valeurs cachés et les poids W2
-        o = self.sigmoid(
-            self.z3)  # Application de la fonction d'activation, et obtention de notre valeur de sortie final
-        return o
+    # Forward propagation function
+    def forward(self, x_input):
+        # Calculation of the application of weights between the input neuron and the hidden neurons
+        z = np.dot(x_input, self.W1)
+        # Application of the sigmoid function
+        self.z2 = self.sigmoid(z)
+        # Calculation of the application of weights between the hidden neuron and the output neurons
+        z3 = np.dot(self.z2, self.W2)
+        # Application of the sigmoid
+        output = self.sigmoid(z3)
+        return output
 
-    # Fonction d'activation
+    # Sigmoid function
     def sigmoid(self, s):
         return 1 / (1 + np.exp(-s))
 
-    # Dérivée de la fonction d'activation
+    # Derived from the sigmoid function
     def sigmoidPrime(self, s):
         return s * (1 - s)
 
-    # Fonction de rétropropagation
-    def backward(self, X, y, o):
-        o_error = y - o  # Calcul de l'erreur
-        o_delta = o_error * self.sigmoidPrime(o)  # Application de la dérivée de la sigmoid à cette erreur
+    # Back propagation function
+    def backward(self, X_input, Y, output):
+        # Calculating the error
+        o_error = Y - output
+        # Application of the sigmoid derivative to this error
+        o_delta = o_error * self.sigmoidPrime(output)
 
-        z2_error = o_delta.dot(self.W2.T)  # Calcul de l'erreur de nos neurones cachés
-        z2_delta = z2_error * self.sigmoidPrime(
-            self.z2)  # Application de la dérivée de la sigmoid à cette erreur
+        # Calculating the error of our hidden neurons
+        z2_error = o_delta.dot(self.W2.T)
+        # Application of the sigmoid derivative to this error
+        z2_delta = z2_error * self.sigmoidPrime(self.z2)
 
-        self.W1 += X.T.dot(z2_delta)  # On ajuste nos poids W1
-        self.W2 += self.z2.T.dot(o_delta)  # On ajuste nos poids W2
+        # Update weight
+        self.W1 += X_input.T.dot(z2_delta)
+        self.W2 += self.z2.T.dot(o_delta)
 
+    # Training function
     def train(self, inp, wait):
         f_output = self.forward(inp)
         self.backward(inp, wait, f_output)
 
-    # Fonction de prédiction
+    # Prediction function
     def predict(self, xPrediction):
-        if self.forward(xPrediction) < 0.5:
-            print("nb: " + self.forward(xPrediction))
-        else:
-            print("nb: " + str(self.forward(xPrediction)))
+        print("nb: " + str(self.forward(xPrediction)))
